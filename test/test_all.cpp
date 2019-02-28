@@ -719,28 +719,6 @@ BOOST_AUTO_TEST_CASE(bridged__are_equal_mnemonics)
 	BOOST_REQUIRE(*value != false);
 	cout << "bridged__are_equal_mnemonics: " << *value << endl;
 }
-BOOST_AUTO_TEST_CASE(bridged__are_equal_mnemonics__caps)
-{
-	using namespace serial_bridge;
-	//
-	boost::property_tree::ptree root;
-	root.put("a", "Neubau umarmen Abart umarmen Turban feilen Brett Bargeld Episode Milchkuh Substanz Jahr Armband Maibaum Tand Grünalge Tabak erziehen Federboa Lobrede Tenor Leuchter Curry Diskurs Tenor");
-			 root.put("b", "neubau umarm Abart umarmen Turban feilen Brett Bargel Epis Milchkuh Subst Jahr Armband Maib Tand Grüna Tabak erzie Feder Lobre Tenor Leuch Curry Diskurs tenor");
-	//
-	auto ret_string = serial_bridge::are_equal_mnemonics(args_string_from_root(root));
-	stringstream ret_stream;
-	ret_stream << ret_string;
-	boost::property_tree::ptree ret_tree;
-	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>(ret_json_key__any__err_msg());
-	if (err_string != none) {
-		BOOST_REQUIRE_MESSAGE(false, *err_string);
-	}
-	optional<bool> value = ret_tree.get_optional<bool>(ret_json_key__generic_retVal());
-	BOOST_REQUIRE(value != none);
-	BOOST_REQUIRE(*value != false);
-	cout << "bridged__are_equal_mnemonics__caps: " << *value << endl;
-}
 //
 BOOST_AUTO_TEST_CASE(bridged__mnemonic_from_seed)
 {
