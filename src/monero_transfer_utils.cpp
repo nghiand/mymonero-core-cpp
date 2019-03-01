@@ -39,7 +39,6 @@
 //
 using namespace std;
 using namespace crypto;
-using namespace std;
 using namespace boost;
 using namespace epee;
 using namespace cryptonote;

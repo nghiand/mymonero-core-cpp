@@ -28,6 +28,7 @@ include_directories("${MONERO_SRC}/multisig")
 include_directories("${MONERO_SRC}/cryptonote_core")
 include_directories("${MONERO_SRC}/cryptonote_protocol")
 include_directories("${MONERO_SRC}/wallet")
+include_directories("${MONERO_SRC}/wallet/api")
 include_directories("${MONERO_SRC}/rpc")
 include_directories("${MONERO_SRC}/mnemonics")
 include_directories("${MONERO_SRC}/contrib/libsodium/include") # support sodium/… paths
@@ -40,28 +41,28 @@ file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/test_*.cpp)
 set(
     SRC_FILES
     #
-    src/monero_address_utils.hpp
-    src/monero_address_utils.cpp
-    src/monero_paymentID_utils.hpp
-    src/monero_paymentID_utils.cpp
-    src/monero_key_image_utils.hpp
-    src/monero_key_image_utils.cpp
-    src/monero_fee_utils.hpp
-    src/monero_fee_utils.cpp
-    src/monero_transfer_utils.hpp
-    src/monero_transfer_utils.cpp
-    src/monero_send_routine.hpp
-    src/monero_send_routine.cpp
-    src/monero_fork_rules.hpp
-    src/monero_fork_rules.cpp
-    src/monero_wallet_utils.hpp
-    src/monero_wallet_utils.cpp
-    src/serial_bridge_index.hpp
-    src/serial_bridge_index.cpp
-    src/serial_bridge_utils.hpp
-    src/serial_bridge_utils.cpp
-    src/tools__ret_vals.hpp
-    src/tools__ret_vals.cpp
+#    src/monero_address_utils.hpp
+#    src/monero_address_utils.cpp
+#    src/monero_paymentID_utils.hpp
+#    src/monero_paymentID_utils.cpp
+#    src/monero_key_image_utils.hpp
+#    src/monero_key_image_utils.cpp
+#    src/monero_fee_utils.hpp
+#    src/monero_fee_utils.cpp
+#    src/monero_transfer_utils.hpp
+#    src/monero_transfer_utils.cpp
+#    src/monero_send_routine.hpp
+#    src/monero_send_routine.cpp
+#    src/monero_fork_rules.hpp
+#    src/monero_fork_rules.cpp
+#    src/monero_wallet_utils.hpp
+#    src/monero_wallet_utils.cpp
+#    src/serial_bridge_index.hpp
+#    src/serial_bridge_index.cpp
+#    src/serial_bridge_utils.hpp
+#    src/serial_bridge_utils.cpp
+#    src/tools__ret_vals.hpp
+#    src/tools__ret_vals.cpp
     #
     ${MONERO_SRC}/cryptonote_basic/cryptonote_basic_impl.cpp
     ${MONERO_SRC}/cryptonote_basic/account.cpp
@@ -106,32 +107,48 @@ set(
     ${MONERO_SRC}/mnemonics/electrum-words.cpp
     ${MONERO_SRC}/vtlogger/logger.cpp
     ${MONERO_SRC}/contrib/libsodium/src/crypto_verify/verify.c
+        ${MONERO_SRC}/wallet/api/mnemonic_phrase.cpp
+        ${MONERO_SRC}/wallet/api/wallet.cpp
 )
 # needed for slow-hash
 add_compile_options(-maes)
 
 #Run through each source
-foreach(testSrc ${TEST_SRCS})
-    # extract the filename without an extension (NAME_WE)
-    get_filename_component(testName ${testSrc} NAME_WE)
-    add_executable(
-        ${testName}
-        ${testSrc}
+#foreach(testSrc ${TEST_SRCS})
+#    message(${testSrc})
+#    # extract the filename without an extension (NAME_WE)
+#    get_filename_component(testName ${testSrc} NAME_WE)
+#    add_executable(
+#        ${testName}
+#        ${testSrc}
+#        ${SRC_FILES}
+#    )
+#    target_link_libraries(
+#        ${testName}
+#        #
+#        ${Boost_LIBRARIES}
+#    )
+#    set_target_properties(
+#        ${testName} PROPERTIES
+#        RUNTIME_OUTPUT_DIRECTORY
+#        ${CMAKE_CURRENT_SOURCE_DIR}/build/products
+#    )
+#    add_test(
+#        NAME ${testName}
+#        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build/products
+#        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/products/${testName} --catch_system_error=yes
+#    )
+#endforeach(testSrc)
+
+add_library( # The name of the library.
+        xmrlib
+
+        # Shared library.
+        SHARED
         ${SRC_FILES}
-    )
-    target_link_libraries(
-        ${testName}
-        #
-        ${Boost_LIBRARIES} 
-    )
-    set_target_properties(
-        ${testName} PROPERTIES 
-        RUNTIME_OUTPUT_DIRECTORY
-        ${CMAKE_CURRENT_SOURCE_DIR}/build/products
-    )
-    add_test(
-        NAME ${testName} 
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build/products 
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/build/products/${testName} --catch_system_error=yes
-    )
-endforeach(testSrc)
+        )
+
+target_link_libraries(
+        xmrlib
+        ${Boost_LIBRARIES}
+)
